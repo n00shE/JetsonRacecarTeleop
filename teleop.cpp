@@ -16,11 +16,11 @@
 #define REVERSE_RANGE 47
 #define FORWARD_RANGE 39
 
-#define SERVO_FULL_LEFT 350
-#define SERVO_NEUTRAL 300
-#define SERVO_FULL_RIGHT 250
-#define LEFT_RANGE 50
-#define RIGHT_RANGE 50
+//#define SERVO_FULL_LEFT 350
+#define SERVO_NEUTRAL 330
+//#define SERVO_FULL_RIGHT 250
+#define LEFT_RANGE 70
+#define RIGHT_RANGE 70
 
 Joystick joystick("/dev/input/js0");
 
@@ -95,7 +95,7 @@ int main() {
               currentDriveValue = event.value;
               currentChannel = ESC_CHANNEL ;
               currentDriveValue /= 32767;
-              printf("currentDriveValue is %f\n", currentDriveValue);
+              //printf("currentDriveValue is %f\n", currentDriveValue);
                 if (currentDriveValue < 0) //FORWARD
                 {
                   //currentPWM = 350 - ((-1*currentDriveValue) / 762.023256);
@@ -121,16 +121,21 @@ int main() {
             {
               currentServoValue = event.value;
               currentChannel = SERVO_CHANNEL;
-              if (currentServoValue > 0) //LEFT
-              {
-                
-              }
-              else if (currentServoValue < 0) //RIGHT
-              {
-                
-              }
-              printf("%f\n", currentServoPWM);
-
+              currentServoValue /= 32767;
+                if (currentServoValue < 0) //LEFT
+                {
+                  currentServoPWM = (SERVO_NEUTRAL + (-currentServoValue * LEFT_RANGE));
+                }
+                else if (currentServoValue > 0) //RIGHT
+                {
+                  currentServoPWM = (SERVO_NEUTRAL - (currentServoValue * RIGHT_RANGE));
+                }
+                else if (currentServoValue == 0)
+                {
+                  currentServoPWM = SERVO_NEUTRAL;
+                }
+                pca9685->setPWM(currentChannel,0,currentServoPWM);
+                printf("Set PWM to %f on channel %d\n", currentServoPWM, currentChannel);
             }  
 
         }
