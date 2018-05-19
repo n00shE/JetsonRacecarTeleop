@@ -38,7 +38,8 @@ int setup() {
     pca9685 = new PCA9685() ;
     int err = pca9685->openPCA9685();
     if (err < 0){
-        printf("Error: %d", pca9685->error);
+       printf("Error: %d", pca9685->error);
+       exit(1);
     }
     printf("PCA9685 Device Address: 0x%02X\n",pca9685->kI2CAddress) ;
     pca9685->setAllPWM(0,0) ;
@@ -47,6 +48,11 @@ int setup() {
     if (joystick.isFound())
       {
         printf("Found Joystick!\n");
+      }
+    else if (!joystick.isFound())
+      {
+        printf("Joystick NOT found\n");
+        exit(1);
       }
     sleep(1) ;
     pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
