@@ -17,8 +17,10 @@
 #define FORWARD_RANGE 39
 
 #define SERVO_FULL_LEFT 350
-#define SERVO_NEUTRAL 290
+#define SERVO_NEUTRAL 300
 #define SERVO_FULL_RIGHT 250
+#define LEFT_RANGE 50
+#define RIGHT_RANGE 50
 
 Joystick joystick("/dev/input/js0");
 
@@ -29,7 +31,7 @@ float currentServoPWM = SERVO_NEUTRAL ;
 int currentChannel = ESC_CHANNEL ;
 int currentAxis ;
 float currentDriveValue ;
-int currentServoValue ;
+float currentServoValue ;
 int scaledESC ;
 
 int setup() {
@@ -94,14 +96,14 @@ int main() {
               currentChannel = ESC_CHANNEL ;
               currentDriveValue /= 32767;
               printf("currentDriveValue is %f\n", currentDriveValue);
-                if (currentDriveValue < 0)
+                if (currentDriveValue < 0) //FORWARD
                 {
                   //currentPWM = 350 - ((-1*currentDriveValue) / 762.023256);
                   currentDrivePWM = (PWM_NEUTRAL + (-currentDriveValue * FORWARD_RANGE));
                   printf("%f\n", currentDrivePWM);
 
                 }
-                else if (currentDriveValue > 0)
+                else if (currentDriveValue > 0) //REVERSE
                 {
                   //currentPWM = 307 - (currentDriveValue / 574.859649);
                   currentDrivePWM = (PWM_NEUTRAL - (currentDriveValue * REVERSE_RANGE));
@@ -119,6 +121,14 @@ int main() {
             {
               currentServoValue = event.value;
               currentChannel = SERVO_CHANNEL;
+              if (currentServoValue > 0) //LEFT
+              {
+                
+              }
+              else if (currentServoValue < 0) //RIGHT
+              {
+                
+              }
               printf("%f\n", currentServoPWM);
 
             }  
